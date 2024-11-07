@@ -18,6 +18,9 @@ def makeRandomBoard():
                 print(board[row][col])
                 continue
             rand = randint(1, 10)
+            if row == 0 and col == 0:
+                board[row][col] = "Empty"
+                continue
             if rand == 1:
                 snakeFall = randint(5, 15)
                 board[row][col] = "Snake " + str(snakeFall)
@@ -25,8 +28,11 @@ def makeRandomBoard():
                     board[row][col] = "Empty"
                     continue
                 else:
-                    if board[int((10 * row + col - snakeFall) / 10)][(10 * row + col - snakeFall) % 10].split()[0] == "Ladder" or board[int((10 * row + col - snakeFall) / 10)][(10 * row + col - snakeFall) % 10].split()[0] == "Snake":
+                    if board[int((10 * row + col - snakeFall) / 10)][(10 * row + col - snakeFall) % 10] == "" or board[int((10 * row + col - snakeFall) / 10)][(10 * row + col + snakeFall) % 10] == "Empty":
+                        continue
+                    else:
                         board[row][col] = "Empty"
+                        continue
                     
             elif rand == 2:
                 ladderClimb = randint(5, 15)
@@ -35,10 +41,12 @@ def makeRandomBoard():
                     board[row][col] = "Empty"
                     continue
                 else:
-                    if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "":
+                    if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "" or board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "Empty":
                         continue
-                    if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10].split()[0] == "Ladder" or board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10].split()[0] == "Snake":
+                    else:
                         board[row][col] = "Empty"
+                    #if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10].split()[0] == "Ladder" or board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10].split()[0] == "Snake":
+                    #    board[row][col] = "Empty"
             else:
                 board[row][col] = "Empty"
 

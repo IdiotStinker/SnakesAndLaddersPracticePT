@@ -20,40 +20,47 @@ def makeRandomBoard():
                 continue
             rand = randint(1, 10)
             if row == 0 and col == 0:
-                board[row][col] = "    Empty"
+                board[row][col] = " - "
                 continue
             if rand == 1:
+                #1/10 chance of snake
                 snakeFall = randint(5, 15)
+                #Add a zero so that the string lengths are the same for good printing.
                 if snakeFall < 10:
-                    board[row][col] = "Snake  0" + str(snakeFall)
+                    board[row][col] = "-0" + str(snakeFall)
                 else:
-                    board[row][col] = "Snake  " + str(snakeFall)
+                    board[row][col] = "-" + str(snakeFall)
                 if snakeFall > row * 10 + col:
-                    board[row][col] = "    Empty"
+                    board[row][col] = " - "
                     continue
                 else:
-                    if board[int((10 * row + col - snakeFall) / 10)][(10 * row + col - snakeFall) % 10] == "" or board[int((10 * row + col - snakeFall) / 10)][(10 * row + col + snakeFall) % 10] == "Empty":
+                    #If the spot where the snake is leading is not a blank, undo the snake.
+                    if board[int((10 * row + col - snakeFall) / 10)][(10 * row + col - snakeFall) % 10] == "" or board[int((10 * row + col - snakeFall) / 10)][(10 * row + col + snakeFall) % 10] == " - ":
                         continue
                     else:
-                        board[row][col] = "    Empty"
+                        board[row][col] = " - "
                         continue
                     
             elif rand == 2:
+                #1/10 chance of ladder
                 ladderClimb = randint(5, 15)
+                #(same as snake) Add a zero so that the string lengths are the same for good printing.
                 if ladderClimb < 10:
-                    board[row][col] = "Ladder 0" + str(ladderClimb)
+                    board[row][col] = "+0" + str(ladderClimb)
                 else:
-                    board[row][col] = "Ladder " + str(ladderClimb)
+                    board[row][col] = "+" + str(ladderClimb)
                 if ladderClimb + 10*row + col >= 100:
-                    board[row][col] = "    Empty"
+                    board[row][col] = " - "
                     continue
                 else:
-                    if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "" or board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "Empty":
+                    #(same as snake) If the spot where the ladder is leading is not a blank, undo the ladder.
+                    if board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == "" or board[int((10 * row + col + ladderClimb) / 10)][(10 * row + col + ladderClimb) % 10] == " - ":
                         continue
                     else:
-                        board[row][col] = "    Empty"
+                        board[row][col] = " - "
             else:
-                board[row][col] = "    Empty"
+                #8/10 chances of blank
+                board[row][col] = " - "
 
     
 

@@ -85,6 +85,7 @@ def playGame():
     p3 = 0
     p4 = 0
     currentPlayer = 1
+    global playing
     playing = True
     while(playing):
         userInput = input("Enter to roll or type 'end game' or 'resign' to do those. ").lower()
@@ -92,37 +93,44 @@ def playGame():
             #do something
         
         if currentPlayer == 1:
-            rollDice(p1)
+            p1 = rollDice(p1)
         elif currentPlayer == 2:
-            rollDice(p2)
+            p2 = rollDice(p2)
         elif currentPlayer == 3:
-            rollDice(p3)
+            p3 = rollDice(p3)
         elif currentPlayer == 4:
-            rollDice(p4)
+            p4 = rollDice(p4)
     
         print(str(currentPlayer) + " " + str(p1) + " " + str(p2) + " " + str(p3) + " " + str(p4))
 
         currentPlayer += 1
         if currentPlayer > numOfPlayers:
             currentPlayer = 1
+    
+    if currentPlayer == 1:
+        currentPlayer = numOfPlayers
+    else:
+        currentPlayer -= 1
 
+    print(f"Game Over! Player {currentPlayer} won the game! Wow, everyone else SUCKS in this game of skill.")
 
-        
 
 def rollDice(p):
     roll = randint(1, 6)
-    p += roll
-    checkSquare(p)
+    if p + roll >= 100:
+        global playing
+        playing = False
+        return
+    return checkSquare(p + roll)
 
-def checkSquare(p):
-    if not board[int(p / 10)][p % 10] == " - ":
-        if "+" in board[int(p / 10)][p % 10]:
-            p += int(board[int(p / 10)][p % 10].split("+")[1])
-        elif "-" in board[int(p / 10)][p % 10]:
-            p -= int(board[int(p / 10)][p % 10].split("-")[1])
-        return
+def checkSquare(newP):
+    if not board[int(newP / 10)][newP % 10] == " - ":
+        if "+" in board[int(newP / 10)][newP % 10]:
+            return newP + int(board[int(newP / 10)][newP % 10].split("+")[1])
+        elif "-" in board[int(newP / 10)][newP % 10]:
+            return newP - int(board[int(newP / 10)][newP % 10].split("-")[1])
     else:
-        return
+        return newP
 
 def print_sol():
     #print(board)
@@ -143,6 +151,3 @@ def print_sol():
 makeRandomBoard()
 print_sol()
 playGame()
-
-cool = " +4".split("+")
-print(cool)

@@ -13,10 +13,10 @@ def makeRandomBoard():
 
     for row in range(10):
         for col in range(10):
-            if row == 9 and col == 10:
+            if row == 9 and col == 9:
                 #If it is the last square, it will be blank.
-                board[row][col] == " - "
-                continue
+                board[row][col] = "END"
+                break
             if row == 0 and col == 0:
                 #If it is the first square, make it blank
                 board[row][col] = " - "
@@ -82,8 +82,18 @@ def startGame():
         #Get the player count
         numOfPlayers = int(input("How many people are playing? "))
         #Four or less players only
-        if (numOfPlayers > 4):
+        if numOfPlayers > 4:
             print("Hey, too many. Four or less! ")
+            startGame()
+            return
+        if numOfPlayers < 0:
+            print("Hey I can't play with negative players.")
+            startGame()
+            return
+        if numOfPlayers == 0:
+            print("Wow a zero player game, sounds like a party")
+            startGame()
+            return
     except ValueError:
         #Inform player and ask again for player count
         print("Hey dude just input a number!!!")
@@ -92,9 +102,14 @@ def startGame():
 
 def playGame():
     #This is off the board, which is where the player starts.
+    #They are global for the printing board
+    global p1
     p1 = -1
+    global p2
     p2 = -1
+    global p3
     p3 = -1
+    global p4
     p4 = -1
     global currentPlayer
     #Player 1 starts
@@ -126,6 +141,7 @@ def playGame():
             continue
             #do something
         
+        #Play the corresponding player's turn
         if currentPlayer == 1:
             p1 = rollDice(p1)
         elif currentPlayer == 2:
@@ -187,20 +203,51 @@ def checkSquare(newP):
         #Otherwise just keep the spot
         return newP
 
-def printBoard():
+def printBoard(start = False):
     #print(board)
     printBoard = []
     #Create a fresh board for printing
     for index, row in enumerate(board):
         if index % 2 == 0:
-            printBoard.append(row)
+            #Make row not affected by printRow, so make it not related to row
+            printRow = []
+            for i in row:
+                printRow.append(i)
+            if not start:
+                #OK, so if we are in the right row (pos / 10 rounded down) then put then set the remainder as the player's name
+                if int(p1 / 10) == index:
+                    printRow[p1 % 10] = " P1"
+                #Also make sure that that many players are playing
+                if int(p2 / 10) == index and numOfPlayers >= 2:
+                    printRow[p2 % 10] = " P2"
+                if int(p3 / 10) == index and numOfPlayers >= 3:
+                    printRow[p3 % 10] = " P3"
+                if int(p4 / 10) == index and numOfPlayers >= 4:
+                    printRow[p4 % 10] = " P4"
+                
+            #Add it to the board made for printing
+            printBoard.append(printRow)
         else:
             #Create a new row for reversing
             printRow = []
             for i in row:
                 printRow.append(i)
-            printRow.reverse()
+            #First board print wont have the players defined.
+            if not start:
+                #OK, so if we are in the right row (pos / 10 rounded down) then put then set the remainder as the player's name
+                if int(p1 / 10) == index:
+                    printRow[p1 % 10] = " P1"
+                #Also make sure that that many players are playing
+                if int(p2 / 10) == index and numOfPlayers >= 2:
+                    printRow[p2 % 10] = " P2"
+                if int(p3 / 10) == index and numOfPlayers >= 3:
+                    printRow[p3 % 10] = " P3"
+                if int(p4 / 10) == index and numOfPlayers >= 4:
+                    printRow[p4 % 10] = " P4"
+
             #Flip every other row for authentic Snakes and Ladders gameplay!
+            printRow.reverse()
+            #Add it to the board made for printing
             printBoard.append(printRow)
 
     printBoard.reverse()
@@ -221,7 +268,7 @@ def printBoard():
 #Making a random board for infinite playtime!
 makeRandomBoard()
 #Showing the board off rip
-printBoard()
+printBoard(True)
 #Start game there to ask how many players
 startGame()
 #Play game loop, runs the game. There is a while loop which goes until the game is done.

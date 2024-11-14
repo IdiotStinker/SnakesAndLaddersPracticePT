@@ -84,6 +84,7 @@ def startGame():
         #Four or less players only
         if numOfPlayers > 4:
             print("Hey, too many. Four or less! ")
+            #Start game to run this function again.
             startGame()
             return
         if numOfPlayers < 0:
@@ -91,6 +92,7 @@ def startGame():
             startGame()
             return
         if numOfPlayers == 0:
+            #Different print message
             print("Wow a zero player game, sounds like a party")
             startGame()
             return
@@ -130,6 +132,7 @@ def playGame():
         #If a player is a loser he can give up and make him out of the game
         if userInput == "resign":
             resignedPlayers.append(currentPlayer)
+            #If everyone is resigned then the game ends
             if len(resignedPlayers) == numOfPlayers:
                 playing = False
             else:
@@ -144,6 +147,7 @@ def playGame():
             playing = False
             continue
         if userInput == "board":
+            #Show the board
             printBoard()
             continue
         if not userInput == "":
@@ -204,10 +208,13 @@ def checkSquare(newP):
             #Then move player by the number
             climb = int(board[int(newP / 10)][newP % 10].split("+")[1])
             print(f"Player {currentPlayer} just hit a ladder and went up {climb} spaces!")
+            #This value returns to the top and changes the current player
             return newP + climb
         elif "-" in board[int(newP / 10)][newP % 10]:
+            #Then move player by the number
             fall = int(board[int(newP / 10)][newP % 10].split("-")[1])
             print(f"Player {currentPlayer} just slid down a snake {fall} squares!")
+            #This value returns to the top and changes the current player
             return newP - fall
     else:
         #Otherwise just keep the spot

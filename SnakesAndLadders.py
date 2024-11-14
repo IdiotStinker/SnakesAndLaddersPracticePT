@@ -133,13 +133,20 @@ def playGame():
             continue
         #Ends the game for all players
         if userInput == "end game":
-            #playerList.append
+            #make a list of all players
+            playerList = [p1, p2, p3, p4]
+            #Find the largest of the positions the players are at
+            #Then find that spot plus one which corresponds to that player
+            currentPlayer = playerList.index(max(playerList)) + 1
             playing = False
             continue
         if userInput == "board":
             printBoard()
             continue
-            #do something
+        if not userInput == "":
+            #If the user typo or try some other command
+            print("You didn't do anything, here's your turn again")
+            continue
         
         #Play the corresponding player's turn
         if currentPlayer == 1:

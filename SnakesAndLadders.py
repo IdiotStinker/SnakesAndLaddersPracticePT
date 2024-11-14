@@ -1,10 +1,8 @@
 from random import randint
-board = []
 def makeRandomBoard():
     global board
-    board = [
-        
-    ]
+    board = []
+    #Necessary for making the board without manually doing it.
     for row in range(10):
         board.append([""])
         for col in range(9):
@@ -15,7 +13,7 @@ def makeRandomBoard():
 
     for row in range(10):
         for col in range(10):
-            if row == 10 and col == 10:
+            if row == 9 and col == 10:
                 #If it is the last square, it will be blank.
                 board[row][col] == " - "
                 continue
@@ -60,7 +58,7 @@ def makeRandomBoard():
                 else:
                     board[row][col] = "+" + str(ladderClimb)
                 #Write the square at the start then get rid of later if necessary.
-                if ladderClimb + 10*row + col >= 100:
+                if ladderClimb + 10*row + col >= 99:
                     #If ladderClimb goes above the map.
                     board[row][col] = " - "
                     continue
@@ -78,28 +76,54 @@ def makeRandomBoard():
                 board[row][col] = " - "
 
 def startGame():
+    #Try block catching non numeric inputs.
     try:
         global numOfPlayers
+        #Get the player count
         numOfPlayers = int(input("How many people are playing? "))
+        #Four or less players only
         if (numOfPlayers > 4):
             print("Hey, too many. Four or less! ")
     except ValueError:
+        #Inform player and ask again for player count
         print("Hey dude just input a number!!!")
         startGame()
         return
 
 def playGame():
+    #This is off the board, which is where the player starts.
     p1 = -1
     p2 = -1
     p3 = -1
     p4 = -1
     global currentPlayer
+    #Player 1 starts
     currentPlayer = 1
     global playing
+    #We start playing
     playing = True
+    resignedPlayers = []
     while(playing):
-        userInput = input("Enter to roll or type 'end game' or 'resign' to do those or type 'board' to show the board. ").lower()
-        #if userInput == "resign" or userInput == "end game":
+        if currentPlayer in resignedPlayers:
+            #Skip their turn permanently
+            currentPlayer += 1
+            if currentPlayer > numOfPlayers:
+                currentPlayer = 1
+            continue
+        #If the user wants something he can get it
+        userInput = input(f"Hey Player {currentPlayer}, enter to roll or type 'end game' or 'resign' to do those or type 'board' to show the board. ").lower()
+        #If a player is a loser he can give up and make him out of the game
+        if userInput == "resign":
+            resignedPlayers.append(currentPlayer)
+            continue
+        #Ends the game for all players
+        if userInput == "end game":
+            #playerList.append
+            playing = False
+            continue
+        if userInput == "board":
+            printBoard()
+            continue
             #do something
         
         if currentPlayer == 1:
@@ -111,36 +135,47 @@ def playGame():
         elif currentPlayer == 4:
             p4 = rollDice(p4)
 
+        #The index position is always one less, these make it easier for players to understand.
         p1NonIndex = p1 + 1
         p2NonIndex = p2 + 1
         p3NonIndex = p3 + 1
         p4NonIndex = p4 + 1
     
+        #Showing current player and each individual's position
         print(str(currentPlayer) + " " + str(p1NonIndex) + " " + str(p2NonIndex) + " " + str(p3NonIndex) + " " + str(p4NonIndex) + "\n")
 
-        currentPlayer += 1
-        if currentPlayer > numOfPlayers:
-            currentPlayer = 1
-    
-    if currentPlayer == 1:
-        currentPlayer = numOfPlayers
-    else:
-        currentPlayer -= 1
-
+        #For the last roll we shouldn't change current player
+        if playing:
+        #Change the player's turn, if it is above the number of players then it is again player one's turn
+            currentPlayer += 1
+        #Here if the current player was about num of players.
+            if currentPlayer > numOfPlayers:
+                currentPlayer = 1
+        
+    #Game Over message
     print(f"Game Over! Player {currentPlayer} won the game! Wow, everyone else SUCKS in this game of skill.")
 
 
 def rollDice(p):
+    #A dice with the imported random.randint
     roll = randint(1, 6)
+    print(f"Player {currentPlayer} rolled a {roll}!")
+    #Helpful for player and me
     if p + roll >= 99:
+        #If it gets to final square, the game is over!
         global playing
         playing = False
         return p + roll
+    #Return the new value that checkSquare returns.
+    #This will calculate a change if there is a ladder or snake
     return checkSquare(p + roll)
 
 def checkSquare(newP):
+    #If the spot is not blank:
     if not board[int(newP / 10)][newP % 10] == " - ":
+        #Find if it is a snake or ladder:
         if "+" in board[int(newP / 10)][newP % 10]:
+            #Then move player by the number
             climb = int(board[int(newP / 10)][newP % 10].split("+")[1])
             print(f"Player {currentPlayer} just hit a ladder and went up {climb} spaces!")
             return newP + climb
@@ -149,34 +184,45 @@ def checkSquare(newP):
             print(f"Player {currentPlayer} just slid down a snake {fall} squares!")
             return newP - fall
     else:
+        #Otherwise just keep the spot
         return newP
 
-def print_sol():
+def printBoard():
     #print(board)
-    printBoard = board
-    printBoard.reverse()
-    #board.reverse()
-    for index, row in enumerate(printBoard):
-
-        #print(row)
-        
-        #coolRow = "".join(str(row).split("'"))
-
+    printBoard = []
+    #Create a fresh board for printing
+    for index, row in enumerate(board):
         if index % 2 == 0:
-            coolRow = "".join(str(row).split("'"))
-            print(coolRow)
+            printBoard.append(row)
         else:
-            row.reverse()
-            coolRow = "".join(str(row).split("'"))
-            print(coolRow)
+            #Create a new row for reversing
+            printRow = []
+            for i in row:
+                printRow.append(i)
+            printRow.reverse()
+            #Flip every other row for authentic Snakes and Ladders gameplay!
+            printBoard.append(printRow)
 
-    #for rowNum, row in enumerate(board):
-    #    if (rowNum % 2 == 1):
-    #        print(row)
-    #    else:
-    #        print(row) 
+    printBoard.reverse()
+    #Reverse so the top is the end and bottom is the start
 
+    for index, row in enumerate(printBoard):
+        #Get rid of the apostrophe
+        coolRow = "".join(str(row).split("'"))
+        #Helpful directional arrows!
+        if index % 2 == 0:
+            print(coolRow + "<---")
+        else:
+            print(coolRow + "--->")
+
+    #Add a seperating line
+    print("\n")
+
+#Making a random board for infinite playtime!
 makeRandomBoard()
-print_sol()
+#Showing the board off rip
+printBoard()
+#Start game there to ask how many players
 startGame()
+#Play game loop, runs the game. There is a while loop which goes until the game is done.
 playGame()

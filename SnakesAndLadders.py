@@ -26,7 +26,6 @@ def makeRandomBoard():
             if not board[row][col] == "":
                 #If the square has been defined it will remain the same. This is caused
                 #when a ladder is made.
-                print(board[row][col])
                 continue
             rand = randint(1, 10)
             if rand == 1:
@@ -78,17 +77,28 @@ def makeRandomBoard():
                 #8/10 chances of blank
                 board[row][col] = " - "
 
+def startGame():
+    try:
+        global numOfPlayers
+        numOfPlayers = int(input("How many people are playing? "))
+        if (numOfPlayers > 4):
+            print("Hey, too many. Four or less! ")
+    except ValueError:
+        print("Hey dude just input a number!!!")
+        startGame()
+        return
+
 def playGame():
-    numOfPlayers = int(input("How many people are playing? "))
-    p1 = 0
-    p2 = 0
-    p3 = 0
-    p4 = 0
+    p1 = -1
+    p2 = -1
+    p3 = -1
+    p4 = -1
+    global currentPlayer
     currentPlayer = 1
     global playing
     playing = True
     while(playing):
-        userInput = input("Enter to roll or type 'end game' or 'resign' to do those. ").lower()
+        userInput = input("Enter to roll or type 'end game' or 'resign' to do those or type 'board' to show the board. ").lower()
         #if userInput == "resign" or userInput == "end game":
             #do something
         
@@ -100,8 +110,13 @@ def playGame():
             p3 = rollDice(p3)
         elif currentPlayer == 4:
             p4 = rollDice(p4)
+
+        p1NonIndex = p1 + 1
+        p2NonIndex = p2 + 1
+        p3NonIndex = p3 + 1
+        p4NonIndex = p4 + 1
     
-        print(str(currentPlayer) + " " + str(p1) + " " + str(p2) + " " + str(p3) + " " + str(p4))
+        print(str(currentPlayer) + " " + str(p1NonIndex) + " " + str(p2NonIndex) + " " + str(p3NonIndex) + " " + str(p4NonIndex) + "\n")
 
         currentPlayer += 1
         if currentPlayer > numOfPlayers:
@@ -117,30 +132,43 @@ def playGame():
 
 def rollDice(p):
     roll = randint(1, 6)
-    if p + roll >= 100:
+    if p + roll >= 99:
         global playing
         playing = False
-        return
+        return p + roll
     return checkSquare(p + roll)
 
 def checkSquare(newP):
     if not board[int(newP / 10)][newP % 10] == " - ":
         if "+" in board[int(newP / 10)][newP % 10]:
-            return newP + int(board[int(newP / 10)][newP % 10].split("+")[1])
+            climb = int(board[int(newP / 10)][newP % 10].split("+")[1])
+            print(f"Player {currentPlayer} just hit a ladder and went up {climb} spaces!")
+            return newP + climb
         elif "-" in board[int(newP / 10)][newP % 10]:
-            return newP - int(board[int(newP / 10)][newP % 10].split("-")[1])
+            fall = int(board[int(newP / 10)][newP % 10].split("-")[1])
+            print(f"Player {currentPlayer} just slid down a snake {fall} squares!")
+            return newP - fall
     else:
         return newP
 
 def print_sol():
     #print(board)
-    for row in board:
+    printBoard = board
+    printBoard.reverse()
+    #board.reverse()
+    for index, row in enumerate(printBoard):
 
         #print(row)
-        coolRow = "".join(str(row).split("'"))
+        
+        #coolRow = "".join(str(row).split("'"))
 
-
-        print(coolRow)
+        if index % 2 == 0:
+            coolRow = "".join(str(row).split("'"))
+            print(coolRow)
+        else:
+            row.reverse()
+            coolRow = "".join(str(row).split("'"))
+            print(coolRow)
 
     #for rowNum, row in enumerate(board):
     #    if (rowNum % 2 == 1):
@@ -150,4 +178,5 @@ def print_sol():
 
 makeRandomBoard()
 print_sol()
+startGame()
 playGame()

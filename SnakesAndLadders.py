@@ -130,9 +130,12 @@ def playGame():
         #If a player is a loser he can give up and make him out of the game
         if userInput == "resign":
             resignedPlayers.append(currentPlayer)
-            continue
+            if len(resignedPlayers) == numOfPlayers:
+                playing = False
+            else:
+                continue
         #Ends the game for all players
-        if userInput == "end game":
+        if userInput == "end game" or not playing:
             #make a list of all players
             playerList = [p1, p2, p3, p4]
             #Find the largest of the positions the players are at

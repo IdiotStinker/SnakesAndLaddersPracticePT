@@ -283,10 +283,6 @@ def printBoard(start = False):
     #Add a seperating line
     print("\n")
 
-
-
-list = ["\033[0m 0;30;47mhey my name jeff", "no", 19]
-print(list)
 #Making a random board for infinite playtime!
 makeRandomBoard()
 #Showing the board off rip

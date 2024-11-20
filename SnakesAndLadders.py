@@ -1,4 +1,6 @@
 from random import randint
+green = "\033[92m"
+black = "\033[47m"
 def makeRandomBoard():
     global board
     board = []
@@ -147,7 +149,6 @@ def playGame():
             playing = False
             continue
         if userInput == "board":
-            #Show the board
             printBoard()
             continue
         if not userInput == "":
@@ -207,13 +208,13 @@ def checkSquare(newP):
         if "+" in board[int(newP / 10)][newP % 10]:
             #Then move player by the number
             climb = int(board[int(newP / 10)][newP % 10].split("+")[1])
-            print(f"Player {currentPlayer} just hit a ladder and went up {climb} spaces!")
+            print(f"\033[92mPlayer {currentPlayer} just hit a ladder and went up {climb} spaces!\033[0m")
             #This value returns to the top and changes the current player
             return newP + climb
         elif "-" in board[int(newP / 10)][newP % 10]:
             #Then move player by the number
             fall = int(board[int(newP / 10)][newP % 10].split("-")[1])
-            print(f"Player {currentPlayer} just slid down a snake {fall} squares!")
+            print(f"\033[92mPlayer {currentPlayer} just slid down a snake {fall} squares!\033[0m")
             #This value returns to the top and changes the current player
             return newP - fall
     else:
@@ -282,6 +283,10 @@ def printBoard(start = False):
     #Add a seperating line
     print("\n")
 
+
+
+list = ["\033[0m 0;30;47mhey my name jeff", "no", 19]
+print(list)
 #Making a random board for infinite playtime!
 makeRandomBoard()
 #Showing the board off rip
